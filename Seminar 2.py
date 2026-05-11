@@ -37,18 +37,23 @@ def flood_fill(field,start_point):
     ran = False
     for i in range(len(start_point)):
         point_collum, point_row = start_point[i]
-        if field[point_row][point_collum] != "x" and point_row < len(field) and point_collum < len(field[point_row]):
+        if field[point_row][point_collum] != "x":
             field[point_row][point_collum]="x"
-            if point_collum +1 <= len(field[point_row])-1:
-                new_points.append((point_collum + 1,point_row))
-            if point_collum -1 <= len(field[point_row])-1:
-                new_points.append((point_collum - 1,point_row))
-            if point_row +1 <= len(field)-1:
-                new_points.append((point_collum,point_row + 1))
-            if point_row -1 <= len(field)-1:
-                new_points.append((point_collum,point_row - 1))
-            ran = True
 
+            if point_collum + 1 <= (len(field[point_row])-1):
+                new_points.append((point_collum + 1,point_row))
+
+            if point_collum -1 >= 1:
+                new_points.append((point_collum - 1,point_row))
+
+            if point_row +1 <= len(field)-1 and point_collum <= len(field[point_row+1])-1:
+                new_points.append((point_collum,point_row + 1))
+
+            if point_row -1 >= 1 and point_collum <= len(field[point_row-1])-1:
+                new_points.append((point_collum,point_row - 1))
+
+            ran = True
+            #print(new_points)
     if ran:
         sleep(0.01)
         flood_fill(field,new_points)
@@ -56,13 +61,17 @@ def flood_fill(field,start_point):
 def file_to_map(filename):
     with open(filename,'r') as file:
         a = list(file)
-        field=[]
-        for row in range(len(a)):
-            field.append(list(a[row]))
+        stripped_a =[row.strip() for row in a]
+    field=[]
+    for row in range(len(stripped_a)):
+        field.append(list(stripped_a[row]))
+    print(f"x:{len(field[0])} y:{len(field)}")
     return field
 
 
 filename='field.txt'
-start_points=[(40,16)]
+start_points=[(66,16)]
+#print_field(file_to_map(filename))
 #flood_fill(create_field(20,10,1),start_points)
 flood_fill(file_to_map(filename),start_points)
+#file_to_map(filename)
